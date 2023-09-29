@@ -58,7 +58,8 @@ export const POST = async (req: NextRequest) => {
     PGSCHEMA: process.env.PGSCHEMA,
     PGDATABASE: process.env.PGDATABASE,
     PGPASSWORD: process.env.PGPASSWORD,
-    v:"1"
+    data: await getAll("alguna");
+    v:"2"
   });
   /*
   if (!data || !data.institucion || !data.participantes || !data.mainInfo) {
