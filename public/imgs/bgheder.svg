@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1920" height="1335" viewBox="0 0 1920 1335">
+  <defs>
+    <linearGradient id="linear-gradient" x1="0.5" y1="0.777" x2="0.248" y2="0.04" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#9eadf7"/>
+      <stop offset="1" stop-color="#9eadf7" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-2" x1="0.083" y1="0.68" x2="1.074" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#ffadad"/>
+      <stop offset="1" stop-color="#ffadad" stop-opacity="0"/>
+    </linearGradient>
+    <clipPath id="clip-Web_1920_3">
+      <rect width="1920" height="1335"/>
+    </clipPath>
+  </defs>
+  <g id="Web_1920_3" data-name="Web 1920 – 3" clip-path="url(#clip-Web_1920_3)">
+    <rect width="1920" height="1335" fill="#fff"/>
+    <path id="Decoration_2" data-name="Decoration 2" d="M444.18,409.37c-127.118,17.1-86.08-105.239-256.237-137.361C31.8,242.533-50.777,134.649,33.8,47.988S210.464,6.132,368.61,71.569,500.231,189.476,489.221,272.01C480.413,338.037,519.249,369.282,444.18,409.37Z" transform="translate(1517 -101)" fill="url(#linear-gradient)"/>
+    <circle id="Decoration_3" data-name="Decoration 3" cx="254.5" cy="254.5" r="254.5" transform="translate(-109 -129)" fill="url(#linear-gradient-2)"/>
+    <path id="Decoration_1" data-name="Decoration 1" d="M417.637,0c2.066,63.263-20.456,194.2-127.073,211.829C157.292,233.87,50.364,252.236,0,443.25" transform="translate(2068.102 -136.48) rotate(81)" fill="none" stroke="#ffadad" stroke-linecap="square" stroke-width="24"/>
+  </g>
+</svg>

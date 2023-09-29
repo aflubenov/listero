@@ -2,6 +2,7 @@
 import React, { useEffect } from 'react';
 import { useState } from "react";
 import { TDataDefinition, TRowValue } from "../types/index";
+import { useValidations } from '../services/componentUtils';
 
 type TGridProps = {
     definitions: TDataDefinition[];
@@ -32,28 +33,6 @@ type TCComponentProps = {
     placeholder: string;
     required: boolean;
 };
-
-const useValidations = (value: any) => {
-    const [isValid, setIsValid] = useState<boolean>(true);
-
-    const validateRequired = (value: string) => {
-        if (!value || value == "" || value == undefined || value == null) {
-            setIsValid(false);
-
-        } else {
-            setIsValid(true);
-        }
-    }
-
-    useEffect(() => {
-        validateRequired(value);
-        // eslint-disable-next-line
-    }, []);
-
-    return {
-        validateRequired, isValid
-    }
-}
 
 const COptions = (props: TCComponentProps) => {
     const { data, value, placeholder } = props;
@@ -195,53 +174,15 @@ const CRowGrid = (props: TRowGridProps) => {
     );
 };
 
-const donwloadData = (rows: TRowValue[]) => {
-    const curated = rows
-        .map((row) => {
-            return row
-                .map((c) => (c.value + "").replaceAll('"', "''").replaceAll(",", ";"))
-                .join(",");
-        })
-        .join("\n");
-
-    const CSVFile = new Blob([curated], { type: "text/csv" });
-    const temp_link = document.createElement("a");
-
-    // Download csv file
-    temp_link.download = "GfG.csv";
-    const url = window.URL.createObjectURL(CSVFile);
-    temp_link.href = url;
-
-    // This link should not be displayed
-    temp_link.style.display = "none";
-    document.body.appendChild(temp_link);
-
-    // Automatically click the link to trigger download
-    temp_link.click();
-    document.body.removeChild(temp_link);
-};
 
 export const GridCustom = (props: TGridProps) => {
     const { values, definitions, showHeaders } = props;
-
-    const [valuesList, setValuesList] = useState<TRowValue[]>(values);
-
-    const addHandler = () => {
-
-        const newRow: TRowValue = definitions.map((d) => {
-            return {
-                value: "",
-            };
-        });
-
-        setValuesList([...valuesList, newRow]);
-    };
 
     return (
         <>
 
             {showHeaders && <HeaderGrid data={definitions} />}
-            {valuesList.map((v, idx) => (
+            {values.map((v, idx) => (
                 <CRowGrid
                     key={"rowgrid" + idx}
                     mykey={"rowgrid-" + idx + "-"}
@@ -249,36 +190,7 @@ export const GridCustom = (props: TGridProps) => {
                     values={v}
                 />
             ))}
-            <hr />
-            <div className='row'>
-                <div className='col-md-6'>
-                    <button onClick={addHandler} className="btn btn-sm btn-primary btn-add-competidor">
-                        Añadir Competidor
-                    </button>
-                </div>
-                <div className='col-md-6 text-right'>
 
-                    <button
-                        onClick={() => {
-                            console.log(valuesList);
-                            donwloadData(valuesList);
-                        }}
-                        className="btn btn-sm btn-info btn-custom"
-                    >
-                        Enviar
-                    </button>
-                    <button
-                        onClick={() => {
-                            console.log(valuesList);
-                            donwloadData(valuesList);
-                        }}
-                        className="btn btn-sm btn-secondary ml-2 btn-custom"
-                    >
-                        Descargar
-                    </button>
-                </div>
-
-            </div>
 
         </>
     );
