@@ -47,6 +47,7 @@ const useValidations = (value: any) => {
 
     useEffect(() => {
         validateRequired(value);
+        // eslint-disable-next-line
     }, []);
 
     return {
@@ -158,7 +159,7 @@ const getComponent = (props: TCComponentProps) => {
         case "text":
             return CText;
         default:
-            return () => <>nada</>;
+            throw "unrecognized component";
             break;
     }
 };
