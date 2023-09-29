@@ -12,23 +12,21 @@ const getAll = async (organizacion: string): Promise<any[]> => {
   return res.rows; //db.users;
 };
 
-const save = async (
+const saveData = async (
   organizacion: string,
   maininfo: any,
   participantes: TRowValue[]
 ): Promise<any> => {
-  try {
-    const ret = await pool.query(
+
+    const ret = await pool.query<any>(
       `INSERT INTO ${getTableName(
         "listero"
       )} (organizacion, maininfo, participantes) VALUES( $1, $2, $3)`,
       [organizacion, JSON.stringify(maininfo), JSON.stringify(participantes)]
     );
-  } catch (e) {
-    throw e;
-  }
+  
 
-  return true;
+  return ret;
 };
 
 export const GET = async (req: NextRequest) => {
@@ -59,7 +57,8 @@ export const POST = async (req: NextRequest) => {
     PGDATABASE: process.env.PGDATABASE,
     PGPASSWORD: process.env.PGPASSWORD,
     data: await getAll("alguna"),
-    v:"2"
+    data2: await saveData("test", {}, []),
+    v:"3"
   });
   /*
   if (!data || !data.institucion || !data.participantes || !data.mainInfo) {
