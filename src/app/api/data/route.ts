@@ -52,7 +52,15 @@ export const GET = async (req: NextRequest) => {
 
 export const POST = async (req: NextRequest) => {
   const { data } = await req.json();
-
+  return NextResponse.json({
+    PGHOST: process.env.PGPORT,
+    PGPORT: process.env.PGHOST,
+    PGSCHEMA: process.env.PGSCHEMA,
+    PGDATABASE: process.env.PGDATABASE,
+    PGPASSWORD: process.env.PGPASSWORD,
+    v:"1"
+  });
+  /*
   if (!data || !data.institucion || !data.participantes || !data.mainInfo) {
     return NextResponse.json(
       {
@@ -67,5 +75,5 @@ export const POST = async (req: NextRequest) => {
   await save(data.institucion, data.mainInfo, data.participantes);
   //console.log("wiiiiiiii: ", data);
 
-  return NextResponse.json({ msg: "ok" });
+  return NextResponse.json({ msg: "ok" });*/
 };
