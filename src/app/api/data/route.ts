@@ -50,7 +50,7 @@ export const GET = async (req: NextRequest) => {
 
 export const POST = async (req: NextRequest) => {
   const { data } = await req.json();
-  return NextResponse.json({
+ /* return NextResponse.json({
     PGHOST: process.env.PGPORT,
     PGPORT: process.env.PGHOST,
     PGSCHEMA: process.env.PGSCHEMA,
@@ -59,8 +59,8 @@ export const POST = async (req: NextRequest) => {
     data: await getAll("alguna"),
     data2: await saveData(data.institucion, data.mainInfo, data.participantes),
     v:"6"
-  });
-  /*
+  });*/
+  
   if (!data || !data.institucion || !data.participantes || !data.mainInfo) {
     return NextResponse.json(
       {
@@ -72,8 +72,8 @@ export const POST = async (req: NextRequest) => {
     );
   }
 
-  await save(data.institucion, data.mainInfo, data.participantes);
+  await saveData(data.institucion, data.mainInfo, data.participantes);//await save(data.institucion, data.mainInfo, data.participantes);
   //console.log("wiiiiiiii: ", data);
 
-  return NextResponse.json({ msg: "ok" });*/
+  return NextResponse.json({ msg: "ok", v:"7" });
 };
