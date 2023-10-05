@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export const useValidations = (value: any) => {
+export const useValidations = (value: any, isRequired: boolean, validationCallback: () => {}) => {
     const [isValid, setIsValid] = useState<boolean>(true);
 
     const validateRequired = (value: string) => {
@@ -10,14 +10,17 @@ export const useValidations = (value: any) => {
         } else {
             setIsValid(true);
         }
+        validationCallback();
+
     }
 
     useEffect(() => {
-        validateRequired(value);
+        isRequired && validateRequired(value);
         // eslint-disable-next-line
     }, []);
 
     return {
-        validateRequired, isValid
+        validateRequired: isRequired ? validateRequired : () => { },
+        isValid
     }
 }

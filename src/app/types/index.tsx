@@ -5,7 +5,8 @@ export type TDataDefinition = {
     type: TColumnTypes;
     options?: any[];
     required: boolean;
-    size: number;
+    sizeControl: number;
+    sizeLabel: number;
 };
 
 export type TCellValue = {
@@ -14,55 +15,64 @@ export type TCellValue = {
 
 export type TRowValue = TCellValue[];
 
-export const defaultCols: TDataDefinition[] = [
+const defaultCols: TDataDefinition[] = [
     {
         name: "Apellido",
         required: true,
         type: "text",
-        size: 2,
+        sizeControl: 2,
+        sizeLabel: 0,
     },
     {
         name: "Nombre",
         required: true,
         type: "text",
-        size: 2,
+        sizeControl: 2,
+        sizeLabel: 0
     },
     {
         name: "M/F",
         required: true,
         type: "options",
         options: ["masc", "fem"],
-        size: 1,
+        sizeControl: 1,
+        sizeLabel: 0
     },
     {
         name: "CAT",
         required: true,
         type: "options",
         options: ["pm-26", "pm-00", "pm-15"],
-        size: 2
+        sizeControl: 2,
+        sizeLabel: 0
     },
     {
         name: "Grado",
         required: true,
         type: "options",
         options: ["amarillo", "blanco", "verde", "rojo", "negro"],
-        size: 2
+        sizeControl: 2,
+        sizeLabel: 0
     },
     {
         name: "DNI",
         required: true,
         type: "number",
-        size: 2,
+        sizeControl: 2,
+        sizeLabel: 0
+
     },
     {
         name: "Año Nac.",
         required: true,
         type: "number",
-        size: 1
+        sizeControl: 1,
+        sizeLabel: 0
+
     },
 ];
 
-export const defaultData: TRowValue[] = [
+const defaultData: TRowValue[] = [
     [
         { value: "nunes" },
         { value: "martin" },
@@ -91,3 +101,58 @@ export const defaultData: TRowValue[] = [
         { value: "1990" },
     ],
 ];
+
+export type TWorkingState = "idle" | "working" | "done" | "error";
+
+const defaultFormFields: TDataDefinition[] = [
+    {
+        name: "Institución",
+        required: true,
+        sizeControl: 4,
+        type: "text",
+        sizeLabel: 2,
+    },
+    {
+        name: "Cantidad de competidores",
+        required: true,
+        sizeControl: 3,
+        type: "text",
+        sizeLabel: 3,
+    },
+    {
+        name: "Profesor",
+        required: true,
+        sizeControl: 4,
+        type: "text",
+        sizeLabel: 2,
+    },
+    {
+        name: "Delegado",
+        required: true,
+        sizeControl: 4,
+        type: "text",
+        sizeLabel: 2,
+    },
+]
+
+export type TScreenConfiguration = {
+    colDefinition: TDataDefinition[],
+    formDefinition: TDataDefinition[],
+
+    listData: TRowValue[],
+    formData: TCellValue[];
+}
+
+export const defaultScreenConfiguration: TScreenConfiguration = {
+    colDefinition: defaultCols,
+    formDefinition: defaultFormFields,
+
+    listData: [],
+    formData: [
+        { value: "" },
+        { value: "" },
+        { value: "" },
+        { value: "" },
+    ],
+
+}

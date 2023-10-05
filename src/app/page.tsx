@@ -7,11 +7,16 @@ import { useStorage } from './services/storageUtils'
 export default function Home() {
 
   const { dataDefinition, rowData,
-    storeData, addRow, downloadData, saveDataToServer } = useStorage("listero_v1_");
+    storeData, addRow, downloadData, saveDataToServer, validateDataFromState,
+    formData, status, isValidData } = useStorage("listero_v1.1_");
 
   return (<>
     <div className='container-fluid bg-header pt-5'>
-      <MainExtraInfo />
+      <MainExtraInfo
+        fieldsDefinition={dataDefinition.formDefinition}
+        fieldsData={formData}
+        validationCallback={validateDataFromState}
+      />
       <div className='container'>
         <hr />
         <strong>Lista de Buena Fe</strong>
@@ -20,36 +25,55 @@ export default function Home() {
       <div className='container'>
         <GridCustom
           showHeaders={false}
-          definitions={dataDefinition}
-          values={rowData} />
+          definitions={dataDefinition.colDefinition}
+          values={rowData}
+          validationCallback={validateDataFromState}
+        />
 
         <hr />
         <div className='row'>
-          <div className='col-md-6'>
-            <button onClick={addRow} className="btn btn-sm btn-primary btn-add-competidor">
+          <div className='col-lg-3 mb-2 text-center'>
+            <button
+              disabled={status == "working" || status == "error"}
+              onClick={addRow} className="btn btn-sm btn-primary btn-add-competidor">
               Añadir Competidor
             </button>
           </div>
-          <div className='col-md-6 text-right'>
+          <div className='col-lg-2'></div>
+          <div className='col-xl-7'>
+            <div className='row'>
+              <div className='col-lg-6'></div>
+              <div className='col-lg-3 mb-2 text-center'>
 
-            <button
-              onClick={async () => {
-                storeData();
-                await saveDataToServer();
-                alert("Sus datos fueron enviados exitosamente!");
-              }}
-              className="btn btn-sm btn-info btn-custom"
-            >
-              Enviar
-            </button>
-            <button
-              onClick={() => {
-                downloadData();
-              }}
-              className="btn btn-sm btn-secondary ml-2 btn-custom"
-            >
-              Descargar
-            </button>
+                <button
+                  disabled={status == "working" || status == "error" || !isValidData}
+                  onClick={async () => {
+                    await saveDataToServer();
+                    alert("Sus datos fueron enviados exitosamente!");
+                  }}
+                  className="btn btn-sm btn-info btn-custom"
+                >
+                  {
+                    status === "working" && <div className="spinner-border spinner-border-sm text-light mr-2" role="status">
+                      <span className="sr-only">Loading...</span>
+                    </div>
+                  }
+                  Enviar
+                </button>
+              </div>
+              <div className='col-lg-3 text-center'>
+                <button
+                  disabled={status == "working" || status == "error" || !isValidData}
+                  onClick={() => {
+                    downloadData();
+                  }}
+                  className="btn btn-sm btn-secondary btn-custom"
+                >
+                  Descargar
+                </button>
+              </div>
+
+            </div>
           </div>
 
         </div>

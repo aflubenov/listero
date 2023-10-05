@@ -12,19 +12,33 @@ const getAll = async (organizacion: string): Promise<any[]> => {
   return res.rows; //db.users;
 };
 
-const saveData = async (
+const createData = async (
   organizacion: string,
   maininfo: any,
   participantes: TRowValue[]
 ): Promise<any> => {
+  const ret = await pool.query<any>(
+    `INSERT INTO ${getTableName(
+      "listero"
+    )} (id, organizacion, maininfo, participantes) VALUES(gen_random_uuid (),  $1, $2, $3) RETURNING id`,
+    [organizacion, JSON.stringify(maininfo), JSON.stringify(participantes)]
+  );
 
-    const ret = await pool.query<any>(
-      `INSERT INTO ${getTableName(
-        "listero"
-      )} (organizacion, maininfo, participantes) VALUES( $1, $2, $3)`,
-      [organizacion, JSON.stringify(maininfo), JSON.stringify(participantes)]
-    );
-  
+  return ret.rows[0];
+};
+
+const updateData = async (
+  id: string,
+  organizacion: string,
+  maininfo: any,
+  participantes: TRowValue[]
+): Promise<any> => {
+  const ret = await pool.query<any>(
+    `UPDATE ${getTableName(
+      "listero"
+    )} SET organizacion = $1, maininfo = $2, participantes = $3 where id = $4 `,
+    [organizacion, JSON.stringify(maininfo), JSON.stringify(participantes), id]
+  );
 
   return ret;
 };
@@ -50,7 +64,7 @@ export const GET = async (req: NextRequest) => {
 
 export const POST = async (req: NextRequest) => {
   const { data } = await req.json();
- /* return NextResponse.json({
+  /* return NextResponse.json({
     PGHOST: process.env.PGPORT,
     PGPORT: process.env.PGHOST,
     PGSCHEMA: process.env.PGSCHEMA,
@@ -60,7 +74,7 @@ export const POST = async (req: NextRequest) => {
     data2: await saveData(data.institucion, data.mainInfo, data.participantes),
     v:"6"
   });*/
-  
+
   if (!data || !data.institucion || !data.participantes || !data.mainInfo) {
     return NextResponse.json(
       {
@@ -72,8 +86,20 @@ export const POST = async (req: NextRequest) => {
     );
   }
 
-  await saveData(data.institucion, data.mainInfo, data.participantes);//await save(data.institucion, data.mainInfo, data.participantes);
-  //console.log("wiiiiiiii: ", data);
+  const uuid = data.uuid;
+  let ret;
+  if (!uuid) {
+    ret = await createData(data.institucion, data.mainInfo, data.participantes);
+  } else {
+    ret = await updateData(
+      uuid,
+      data.institucion,
+      data.mainInfo,
+      data.participantes
+    );
 
-  return NextResponse.json({ msg: "ok", v:"7" });
+    ret = { id: uuid };
+  }
+
+  return NextResponse.json({ msg: "ok", v: "10", ret });
 };
