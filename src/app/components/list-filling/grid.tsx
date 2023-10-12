@@ -1,15 +1,14 @@
 "use client"
-import React, { useEffect } from 'react';
-import { useState } from "react";
-import { TDataDefinition, TRowValue } from "../types/index";
-import { useValidations } from '../services/componentUtils';
-import { useComponents } from '../services/useComponents';
+import React from 'react';
+import { TDataDefinition, TRowValue } from "../../types/index";
+import { useComponents } from '../../services/useComponents';
 
 type TGridProps = {
     definitions: TDataDefinition[];
     values: TRowValue[];
     showHeaders: boolean;
     validationCallback: () => {};
+    deleteCallback: (idx: number) => void;
 };
 
 type THeaderGridProps = {
@@ -72,20 +71,32 @@ const CRowGrid = (props: TRowGridProps) => {
 
 
 export const GridCustom = (props: TGridProps) => {
-    const { values, definitions, showHeaders, validationCallback } = props;
+    const { values, definitions, showHeaders,
+        validationCallback, deleteCallback } = props;
 
     return (
         <>
 
             {showHeaders && <HeaderGrid data={definitions} />}
             {values.map((v, idx) => (
-                <CRowGrid
-                    key={"rowgrid" + idx}
-                    mykey={"rowgrid-" + idx + "-"}
-                    definitions={definitions}
-                    values={v}
-                    validationCallback={validationCallback}
-                />
+                <div className='row no-gutters '>
+                    <div className='col-11 '>
+                        <CRowGrid
+                            key={"rowgrid" + idx}
+                            mykey={"rowgrid-" + idx + "-"}
+                            definitions={definitions}
+                            values={v}
+                            validationCallback={validationCallback}
+                        />
+                    </div>
+                    <div className='col-1 text-center '>
+                        <button onClick={(e) => deleteCallback(idx)}
+                            className='btn btn-danger btn-sm btn-grid-delete'
+
+                        ><i className="fa-regular fa-trash-can"></i></button>
+                    </div>
+                </div>
+
             ))}
 
 

@@ -1,5 +1,5 @@
-import { useComponents } from "../services/useComponents";
-import { TDataDefinition, TRowValue } from "../types"
+import { useComponents } from "@/app/services/useComponents";
+import { TDataDefinition, TRowValue } from "@/app/types";
 
 type TMainExtraInfoProps = {
     fieldsDefinition: TDataDefinition[],

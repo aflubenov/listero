@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { TCellValue, TDataDefinition, TRowValue, TScreenConfiguration, TWorkingState, defaultScreenConfiguration } from "../types";
+import { saveListToServer } from "./api";
+import { jsPDF } from "jspdf";
 
 
 export const useStorage = (baseName: string) => {
@@ -9,6 +11,7 @@ export const useStorage = (baseName: string) => {
     const [formData, setFormData] = useState<TCellValue[]>(dataDefinition.formData);
     const [status, setStatus] = useState<TWorkingState>("idle");
     const [isValidData, setIsValidData] = useState<boolean>(false);
+    const [showPrint, setShowPrint] = useState<boolean>(false);
 
     const dataDefinitionName = baseName + "dadaDefinition";
     const rowDataName = baseName + "rowData";
@@ -57,6 +60,41 @@ export const useStorage = (baseName: string) => {
         document.body.removeChild(temp_link);
     };
 
+    const downloadPDF = () => {
+        setStatus("working");
+        setShowPrint(true);
+        setTimeout(() => {
+            const doc = new jsPDF({
+                orientation: "landscape",
+
+            });
+            /*
+                    doc.text("hola", 10, 10);
+                    const l = rowData.length;
+                    const desfazaje = 20;
+            
+                    for (let i = 0; i < l; i++) {
+            
+                        const row = rowData[i];
+                        doc.text(row.map(v => v.value).join(", "), 10, i * 10 + desfazaje);
+                    }
+            */
+            doc.html(Array.from(document.getElementsByClassName("paraimprimir"))[0],
+                {
+                    callback: (doc) => {
+
+                        setStatus("idle");
+                        doc.save("lista.pdf");
+                    },
+                    autoPaging: true,
+                    width: 400,
+                    windowWidth: 1920
+                }
+            )
+
+        }, 2000);
+
+    }
 
     const validateFormData = (formDefinition: TDataDefinition[], pFormData: TCellValue[]): boolean => {
 
@@ -118,31 +156,20 @@ export const useStorage = (baseName: string) => {
     const saveDataToServer = async () => {
 
         setStatus("working");
-        const data = await fetch(`/api/data`, {
-            method: "POST",
-            body: JSON.stringify({
-                data: {
-                    institucion: formData[0].value, //TODO ANGEL: mejorar
-                    participantes: rowData,
-                    mainInfo: formData,
-                    uuid: getStoredUUID(),
-                }
-            })
-        })
 
-        if (!data.ok) {
+        try {
+            const bodyResponse = await saveListToServer(formData, rowData, getStoredUUID());
+            const uuid = bodyResponse?.ret?.id;
+            storeData(uuid);
+
+            setStatus("done");
+
+        } catch (error) {
             setStatus("error");
             alert("Ocurrió un error, por favor vuelva a intentar");
             setStatus("done");
-            throw new Error('Failed to fetch data')
+            throw error;
         }
-
-        const bodyResponse = await data.json();
-        const uuid = bodyResponse?.ret?.id;
-        storeData(uuid);
-
-        setStatus("done");
-        //        console.log('wiiii: ', await data.json());
     }
 
 
@@ -159,6 +186,14 @@ export const useStorage = (baseName: string) => {
         setRowData(newRows);
         validateData(formData, newRows, dataDefinition);
     };
+
+    const removeRow = (idx: number) => {
+        if (confirm("Está seguro que desea eliminar esta fila?")) {
+            rowData.splice(idx, 1);
+            setRowData([...rowData]);
+
+        }
+    }
 
     useEffect(() => {
         const lsDDefinition = localStorage.getItem(dataDefinitionName);
@@ -189,17 +224,71 @@ export const useStorage = (baseName: string) => {
     }, [])
 
 
+
+
     return {
         dataDefinition,
         rowData,
         formData,
         storeData,
-        downloadData,
+        downloadPDF,
         addRow,
         saveDataToServer,
         status,
         isValidData,
-        validateDataFromState
+        validateDataFromState,
+        removeRow,
+        showPrint
     }
+
+}
+
+
+
+export type TConvertToExcel = {
+    organizacion: string,
+    screenConf: TScreenConfiguration
+}
+
+
+
+const convertOrganizacionToToExcel = ({ organizacion, screenConf }: TConvertToExcel) => {
+
+    console.log('averrrr: ', screenConf)
+
+    const formBasicRow = screenConf.formData.map(v => v.value);
+    const formEmptyRow = screenConf.formDefinition.map(v => " ");
+    const participantsEmptyRow = screenConf.colDefinition.map(c => " ");
+    const participantsRows = screenConf.listData.map(r => r.map(v => v.value));
+
+    const finalList = [
+        [...formBasicRow, ...participantsEmptyRow],
+        ...participantsRows.map(r => [...formEmptyRow, ...r])
+    ]
+
+    return finalList;
+}
+
+export const convertToExcel = (data: TConvertToExcel[]) => {
+    const screenConf = data[0].screenConf
+    const finalList = [
+        [... (screenConf.formDefinition.map(c => c.name)), ...(screenConf.colDefinition.map(c => c.name))]
+    ];
+
+
+
+    data.forEach(d => finalList.push(...convertOrganizacionToToExcel(d)));
+
+    const curated = finalList
+        .map((row) => {
+            return row
+                .map((c) => (c + "").replaceAll('"', "''").replaceAll(",", ";"))
+                .join(",");
+        })
+        .join("\n");
+
+    console.log('wiiiiiiiiiiiiiiiiiiiiiii: ', finalList);
+
+    return curated;
 
 }
