@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { TCellValue, TDataDefinition, TRowValue, TScreenConfiguration, TWorkingState, defaultScreenConfiguration } from "../types";
 import { saveListToServer } from "./api";
 import { jsPDF } from "jspdf";
+import { writeFileXLSX, utils } from "xlsx";
 
 
 export const useStorage = (baseName: string) => {
@@ -254,9 +255,9 @@ export type TConvertToExcel = {
 
 
 
-const convertOrganizacionToToExcel = ({ organizacion, screenConf }: TConvertToExcel) => {
+const convertOrganizacionToToCSV = ({ organizacion, screenConf }: TConvertToExcel) => {
 
-    console.log('averrrr: ', screenConf)
+    //console.log('averrrr: ', screenConf)
 
     const formBasicRow = screenConf.formData.map(v => v.value);
     const formEmptyRow = screenConf.formDefinition.map(v => " ");
@@ -271,6 +272,46 @@ const convertOrganizacionToToExcel = ({ organizacion, screenConf }: TConvertToEx
     return finalList;
 }
 
+const convertOrganizacionToToXLSX = ({ organizacion, screenConf }: TConvertToExcel) => {
+
+    //console.log('averrrr: ', screenConf)
+    const formEmptyRow = screenConf.formDefinition.reduce((prev, currDef) => ({
+        ...prev,
+        [currDef.name]: undefined
+    }), {})
+
+
+    const participantsEmptyRow = screenConf.colDefinition.reduce((prev, currDef) => ({
+        ...prev,
+        [currDef.name]: undefined
+    }), {});
+
+    const formBasicRow = screenConf.formDefinition.reduce((prev, currDef, idx) => ({
+        ...prev,
+        [currDef.name]: screenConf.formData[idx].value
+    }), {})
+
+
+    const getParticipantRow = (d: TRowValue) => {
+        return screenConf.colDefinition.reduce((prevVal, currDef, idx) => ({
+            ...prevVal,
+            [currDef.name]: d[idx].value
+        }), formEmptyRow)
+    }
+
+    const participantsRows = screenConf.listData.map(r => getParticipantRow(r));
+
+
+
+
+    const finalList = [
+        { ...formBasicRow, ...participantsEmptyRow },
+        ...participantsRows
+    ]
+
+    return finalList;
+}
+
 export const convertToExcel = (data: TConvertToExcel[]) => {
     const screenConf = data[0].screenConf
     const finalList = [
@@ -279,7 +320,7 @@ export const convertToExcel = (data: TConvertToExcel[]) => {
 
 
 
-    data.forEach(d => finalList.push(...convertOrganizacionToToExcel(d)));
+    data.forEach(d => finalList.push(...convertOrganizacionToToCSV(d)));
 
     const curated = finalList
         .map((row) => {
@@ -293,4 +334,17 @@ export const convertToExcel = (data: TConvertToExcel[]) => {
 
     return curated;
 
+}
+
+export const convertToXLSX = (data: TConvertToExcel[]) => {
+
+    const finalList: any[] = [];
+
+    data.forEach(d => finalList.push(...convertOrganizacionToToXLSX(d)));
+
+    const worksheet = utils.json_to_sheet(finalList)
+    const workbook = utils.book_new();
+    utils.book_append_sheet(workbook, worksheet, "Lista")
+    writeFileXLSX(workbook, "Lista.xlsx", { compression: true });
+    //writeFileXLSX()
 }

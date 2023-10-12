@@ -1,5 +1,5 @@
 import { getParticipationList } from "@/app/services/server_participants";
-import { TConvertToExcel, convertToExcel } from "@/app/services/storageUtils";
+import { TConvertToExcel, convertToExcel, convertToXLSX } from "@/app/services/storageUtils";
 import { TCellValue, TRowValue, defaultScreenConfiguration } from "@/app/types";
 import { NextRequest, NextResponse } from "next/server"
 
@@ -19,7 +19,7 @@ export const getServerSideProps = async function (req: NextRequest, res: NextRes
 
 const Index = (props: any) => {
 
-    console.log('aver lasprops: ', JSON.parse(props.data));
+    //console.log('aver lasprops: ', JSON.parse(props.data));
 
     const data = JSON.parse(props.data) as {
         organizacion: string,
@@ -30,7 +30,7 @@ const Index = (props: any) => {
     const screenConf = defaultScreenConfiguration; //TODO: ANGEL ver la forma de obtener esto de manera genérica
 
 
-    const curated = convertToExcel(data.map((d): TConvertToExcel => {
+    const dataForExport = data.map((d): TConvertToExcel => {
         return {
             organizacion: d.organizacion,
             screenConf: {
@@ -40,11 +40,13 @@ const Index = (props: any) => {
                 listData: d.participantes
             }
         }
-    }))
+    });
+
 
 
     const descargar = () => {
 
+        const curated = convertToExcel(dataForExport)
         const CSVFile = new Blob([curated], { type: "text/csv" });
         const temp_link = window.document.createElement("a");
 
@@ -66,7 +68,7 @@ const Index = (props: any) => {
         <>
             <span>Click para </span>
             <button
-                onClick={descargar}
+                onClick={() => convertToXLSX(dataForExport)}
             >Descargar</button>
         </>
     )
