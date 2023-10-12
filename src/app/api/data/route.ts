@@ -3,7 +3,7 @@ import { getTableName, pool } from "../pgDatabaseHelper";
 import { TRowValue } from "@/app/types";
 
 // **** Functions **** //
-export const getParticipationList = async (ownerId: string): Promise<any[]> => {
+export const getParticipationList = async (ownerId: string) => {
   const res = await pool.query<any>(
     `select * from ${getTableName("listero")} 
      where owner_id = $1`,

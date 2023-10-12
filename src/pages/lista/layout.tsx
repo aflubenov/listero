@@ -1,11 +1,4 @@
 "use client"
-import type { Metadata } from 'next'
-
-
-export const metadata: Metadata = {
-  title: 'Lista de participantes',
-  description: '',
-}
 
 export default function ListaLayout({
   children,
