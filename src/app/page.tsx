@@ -93,12 +93,12 @@ export default function Home() {
         <div className="container mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
             <div className="testimonial-card bg-white p-8 rounded-lg shadow-lg text-center animate__animated animate__fadeInLeft">
-              <p className="mb-4">"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, elit at scelerisque egestas."</p>
+              <p className="mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, elit at scelerisque egestas.</p>
               <p className="font-bold">John Doe</p>
               <p className="text-gray-600">CEO</p>
             </div>
             <div className="testimonial-card bg-white p-8 rounded-lg shadow-lg text-center animate__animated animate__fadeInRight">
-              <p className="mb-4">"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, elit at scelerisque egestas."</p>
+              <p className="mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, elit at scelerisque egestas.</p>
               <p className="font-bold">Jane Smith</p>
               <p className="text-gray-600">COO</p>
             </div>

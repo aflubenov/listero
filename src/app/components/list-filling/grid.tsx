@@ -79,7 +79,9 @@ export const GridCustom = (props: TGridProps) => {
 
             {showHeaders && <HeaderGrid data={definitions} />}
             {values.map((v, idx) => (
-                <div className='row no-gutters '>
+                <div
+                    key={"div_rowgrid_" + idx}
+                    className='row no-gutters '>
                     <div className='col-11 '>
                         <CRowGrid
                             key={"rowgrid" + idx}

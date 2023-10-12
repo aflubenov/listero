@@ -79,7 +79,9 @@ export const useStorage = (baseName: string) => {
                         doc.text(row.map(v => v.value).join(", "), 10, i * 10 + desfazaje);
                     }
             */
-            doc.html(Array.from(document.getElementsByClassName("paraimprimir"))[0],
+            const printNode = Array.from(document.getElementsByClassName("paraimprimir"));
+
+            doc.html(printNode[0] as HTMLElement,
                 {
                     callback: (doc) => {
 
@@ -220,7 +222,7 @@ export const useStorage = (baseName: string) => {
             validateData(parsedFormData, parsedRowData, parsedDataDefinition);
         }
 
-
+        //eslint disable-next-line
     }, [])
 
 

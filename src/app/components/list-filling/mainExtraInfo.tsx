@@ -20,7 +20,7 @@ export const MainExtraInfo = (props: TMainExtraInfoProps) => {
         <div className='container mt-5'>
             <div className='row'>
                 <div className='col-md-2 text-left'>
-                    <img className="img-fluid" src="/imgs/logo.png" />
+                    <img alt="logo inscripcion" className="img-fluid" src="/imgs/logo.png" />
                 </div>
                 <div className='col-8'>
                     <h1 className="d-sm-none d-none d-md-block">

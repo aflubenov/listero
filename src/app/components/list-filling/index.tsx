@@ -24,7 +24,9 @@ export const ListFilling = () => {
                                 {
 
                                     dataDefinition.formDefinition.map(
-                                        h => <td className="maincelda p-2">
+                                        (h, idx) => <td
+                                            key={"maincelda_head_" + idx}
+                                            className="maincelda p-2">
                                             <b>
                                                 {h.name}
                                             </b>
@@ -35,7 +37,7 @@ export const ListFilling = () => {
                             <tr className="mainfila">
                                 {
                                     formData.map((d, idx) => <td
-
+                                        key={"maincelda_data_" + idx}
                                         className={"maincelda "}>
                                         <div className={"m-2 p-2 " + + (dataDefinition.formDefinition[idx].type === "number" ? " text-right" : "")} style={{
                                             borderLeft: idx > 0 ? "1px solid lightgray" : "none",
@@ -63,7 +65,9 @@ export const ListFilling = () => {
                                 borderBottom: "1px solid darkgray"
                             }}>
                                 {
-                                    dataDefinition.colDefinition.map(c => <td className="datacelda p-2">
+                                    dataDefinition.colDefinition.map((c, idx) => <td
+                                        key={"datacelda_head_" + idx}
+                                        className="datacelda p-2">
                                         <b>
                                             {c.name}
                                         </b>
@@ -71,9 +75,13 @@ export const ListFilling = () => {
                                 }
                             </tr>
                             {
-                                rowData.map(r => <tr className="datafila">
+                                rowData.map((r, idx) => <tr
+                                    key={"datacefila_" + idx}
+                                    className="datafila">
                                     {
-                                        r.map((c, idx) => <td className="datacelda">
+                                        r.map((c, idx) => <td
+                                            key={"datacelda_data_" + idx}
+                                            className="datacelda">
                                             <div className={"m-2 p-2 " + + (dataDefinition.colDefinition[idx].type === "number" ? " text-right" : "")} style={{
                                                 borderLeft: idx > 0 ? "1px solid lightgray" : "none",
                                                 width: "100%"

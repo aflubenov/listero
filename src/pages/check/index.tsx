@@ -1,4 +1,4 @@
-import { getParticipationList } from "@/app/api/data/route";
+import { getParticipationList } from "@/app/services/server_participants";
 import { TConvertToExcel, convertToExcel } from "@/app/services/storageUtils";
 import { TCellValue, TRowValue, defaultScreenConfiguration } from "@/app/types";
 import { NextRequest, NextResponse } from "next/server"
@@ -7,9 +7,6 @@ import { NextRequest, NextResponse } from "next/server"
 
 export const getServerSideProps = async function (req: NextRequest, res: NextResponse) {
 
-
-    //await saveListToServer([{ value: 1 }], [], "");
-    //const data = await getListFromServer("la institucion arreglada");
 
     const data = await getParticipationList("la institucion arreglada");
     return {
@@ -67,8 +64,7 @@ const Index = (props: any) => {
 
     return (
         <>
-
-            here you'll see your list
+            <span>Click para </span>
             <button
                 onClick={descargar}
             >Descargar</button>

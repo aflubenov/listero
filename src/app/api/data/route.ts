@@ -3,17 +3,8 @@ import { getTableName, pool } from "../pgDatabaseHelper";
 import { TRowValue } from "@/app/types";
 
 // **** Functions **** //
-export const getParticipationList = async (ownerId: string) => {
-  const res = await pool.query<any>(
-    `select * from ${getTableName("listero")} 
-     where owner_id = $1`,
-    ["11111111-1111-1111-1111-111111111111"] //TODO: ANGEL esto tiene que ser genérico
-  );
 
-  return res.rows; //db.users;
-};
-
-export const getAll = async (organizacion: string): Promise<any[]> => {
+const getAll = async (organizacion: string): Promise<any[]> => {
   const res = await pool.query<any>(
     `select * from ${getTableName("listero")} where organizacion = $1`,
     [organizacion]
