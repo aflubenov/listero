@@ -123,7 +123,7 @@ const Index = () => {
     const updateFormField = (p: TDataDefinition) => {
         if (!editingField) return;
 
-        formFieldDefinition[editingField.idx] = editingField.data;
+        formFieldDefinition[editingField.idx] = p;
         setFormFieldDefinition([...formFieldDefinition]);
         setShowTextField(false);
         setEditingField(undefined);
