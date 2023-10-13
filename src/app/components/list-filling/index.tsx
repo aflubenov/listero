@@ -1,6 +1,6 @@
 
 import { useStorage } from "@/app/services/storageUtils";
-import { MainExtraInfo } from "./mainExtraInfo";
+import { MainExtraInfo, MainHeader } from "./mainExtraInfo";
 import { GridCustom } from "./grid";
 
 export const ListFilling = () => {
@@ -99,11 +99,15 @@ export const ListFilling = () => {
 
                 </div>
             }
-            <MainExtraInfo
-                fieldsDefinition={dataDefinition.formDefinition}
-                fieldsData={formData}
-                validationCallback={validateDataFromState}
-            />
+            <div className='container mt-5'>
+                <MainHeader />
+
+                <MainExtraInfo
+                    fieldsDefinition={dataDefinition.formDefinition}
+                    fieldsData={formData}
+                    validationCallback={validateDataFromState}
+                />
+            </div>
             <div className='container'>
                 <hr />
                 <strong>Lista de Buena Fe</strong>
