@@ -168,7 +168,9 @@ const Index = () => {
                         </div>}
                         {!showLogin && projectList.length > 0 && <div className="col-md-6">
                             <h3>Lista de eventos</h3>
-                            {projectList.map(p => <div className="row pt-2">
+                            {projectList.map(p => <div
+                                key={'row_pid_' + p.id}
+                                className="row pt-2">
                                 <div className="col-md-9">{p.name}</div>
                                 <div className="col-md-3">
                                     <button
