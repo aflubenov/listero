@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getParticipationList } from "@/app/services/server_participants";
 
 // **** Functions **** //
 
 import * as adminFB from "firebase-admin";
+import { getProjectList } from "@/app/services/server_projects";
 
 let fbCert = JSON.parse(process.env.FIREBASE_SETUP as any);
 fbCert.private_key = fbCert.private_key.replace(/\\n/g, "\n");
@@ -29,7 +29,6 @@ const unAuthorizedError = (message: string = "unauthorized") => {
 
 export const GET = async (req: NextRequest) => {
   const ownerId = req.nextUrl.searchParams.get("ownerid");
-  const projectId = req.nextUrl.searchParams.get("projectid");
   const authHeader = req.headers.get("Authorization");
 
   if (!authHeader) {
@@ -39,9 +38,9 @@ export const GET = async (req: NextRequest) => {
   const [bearer, userId] = authHeader.split(" ");
   if (bearer !== "Bearer" || !userId) return unAuthorizedError();
 
-  if (!ownerId || !projectId) {
+  if (!ownerId) {
     return NextResponse.json(
-      { error: "ownerId and projectid are required" },
+      { error: "ownerId is required" },
       {
         status: 403,
       }
@@ -54,7 +53,7 @@ export const GET = async (req: NextRequest) => {
     throw unAuthorizedError(error.message);
   }
 
-  const data = await getParticipationList(ownerId, projectId);
+  const data = await getProjectList(ownerId);
 
   return NextResponse.json({
     data,

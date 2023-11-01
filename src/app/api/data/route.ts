@@ -16,13 +16,19 @@ const getAll = async (organizacion: string): Promise<any[]> => {
 const createData = async (
   organizacion: string,
   maininfo: any,
-  participantes: TRowValue[]
+  participantes: TRowValue[],
+  projectId: string
 ): Promise<any> => {
   const ret = await pool.query<any>(
     `INSERT INTO ${getTableName(
       "listero"
-    )} (id, organizacion, maininfo, participantes) VALUES(gen_random_uuid (),  $1, $2, $3) RETURNING id`,
-    [organizacion, JSON.stringify(maininfo), JSON.stringify(participantes)]
+    )} (id, organizacion, maininfo, participantes, project_id) VALUES(gen_random_uuid (),  $1, $2, $3, $4) RETURNING id`,
+    [
+      organizacion,
+      JSON.stringify(maininfo),
+      JSON.stringify(participantes),
+      projectId,
+    ]
   );
 
   return ret.rows[0];
@@ -76,10 +82,17 @@ export const POST = async (req: NextRequest) => {
     v:"6"
   });*/
 
-  if (!data || !data.institucion || !data.participantes || !data.mainInfo) {
+  if (
+    !data ||
+    !data.institucion ||
+    !data.participantes ||
+    !data.mainInfo ||
+    !data.projectId
+  ) {
     return NextResponse.json(
       {
-        error: "data, institucion, participantes y maininfo es requerido",
+        error:
+          "data, institucion, participantes, projectId y maininfo es requerido",
       },
       {
         status: 403,
@@ -90,7 +103,12 @@ export const POST = async (req: NextRequest) => {
   const uuid = data.uuid;
   let ret;
   if (!uuid) {
-    ret = await createData(data.institucion, data.mainInfo, data.participantes);
+    ret = await createData(
+      data.institucion,
+      data.mainInfo,
+      data.participantes,
+      data.projectId
+    );
   } else {
     ret = await updateData(
       uuid,

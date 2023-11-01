@@ -12,10 +12,11 @@ const TABLES: {
 } = {
   candidates: "candidates",
   listero: "listero",
+  projects: "listero_projects",
   //techs: "users_tech",
 };
 
-type Tables = "candidates" | "listero" | "other";
+type Tables = "candidates" | "listero" | "other" | "projects";
 
 export const getTableName = (table: Tables): string =>
   `${process.env.PGSCHEMA}.${TABLES[table]}`;

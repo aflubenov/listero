@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server"
 import '@/app/scss/bootstrap.scss'
 import { MouseEvent, useRef, useState } from "react";
 import { useAuthService } from "@/app/services/auth";
-import { getListParticipantListFromServer } from "@/app/services/api";
+import { TProject, getListParticipantListFromServer, getProjectListFromServer } from "@/app/services/api";
 
 /*
 export const getServerSideProps = async function (req: NextRequest, res: NextResponse) {
@@ -54,7 +54,33 @@ const Index = () => {
     const pwdRef = useRef<any>();
     const errorRef = useRef<string>("");
     const [isSigningIn, setIsSigningIn] = useState(false);
+    const [projectList, setProjectList] = useState<TProject[]>([]);
+    const [showLogin, setShowLogin] = useState<boolean>(true);
+    const [tokenIdSec, setTokenIdSec] = useState<string>("");
     const { singInUser } = useAuthService();
+
+    const downloadParticipationList = async (pProjectId: string, tokenId: string) => {
+        const dataResp = await getListParticipantListFromServer("unownerid", tokenId, pProjectId) //TODO: Angel - definir el owner id
+        const data = dataResp.data as {
+            organizacion: string,
+            maininfo: TCellValue[],
+            participantes: TRowValue[]
+        }[];
+        const dataForExport = data.map((d): TConvertToExcel => {
+            return {
+                organizacion: d.organizacion,
+                screenConf: {
+                    colDefinition: screenConf.colDefinition,
+                    formData: d.maininfo,
+                    formDefinition: screenConf.formDefinition,
+                    listData: d.participantes
+                }
+            }
+        });
+
+        convertToXLSX(dataForExport);
+    }
+
     const loginHandler = async (e: MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         errorRef.current = "";
@@ -67,25 +93,12 @@ const Index = () => {
                 pwdRef.current.value = "";
                 //userRef.current.value = "";
 
-                const dataResp = await getListParticipantListFromServer("unownerid", tokenId) //TODO: Angel - definir el owner id
-                const data = dataResp.data as {
-                    organizacion: string,
-                    maininfo: TCellValue[],
-                    participantes: TRowValue[]
-                }[];
-                const dataForExport = data.map((d): TConvertToExcel => {
-                    return {
-                        organizacion: d.organizacion,
-                        screenConf: {
-                            colDefinition: screenConf.colDefinition,
-                            formData: d.maininfo,
-                            formDefinition: screenConf.formDefinition,
-                            listData: d.participantes
-                        }
-                    }
-                });
-
-                convertToXLSX(dataForExport);
+                //downloadParticipationList("", tokenId);
+                const projectList = await getProjectListFromServer("unownerid", tokenId); //TODO angel: deshardcoear
+                //console.log("project list ", projectList)
+                setProjectList(projectList.data);
+                setShowLogin(false);
+                setTokenIdSec(tokenId);
 
             } catch (error) {
                 console.log('errorrrrrr', error)
@@ -95,6 +108,9 @@ const Index = () => {
             }
         }
     }
+
+
+
 
 
     return (
@@ -123,7 +139,7 @@ const Index = () => {
                     <div className="row">
                         <div className="col-md-3">
                         </div>
-                        <div className="col-md-6">
+                        {showLogin && <div className="col-md-6">
 
                             <form >
                                 <input type="hidden" name="_token" />
@@ -149,7 +165,18 @@ const Index = () => {
                                     </div>
                                 </div>
                             </form>
-                        </div>
+                        </div>}
+                        {!showLogin && projectList.length > 0 && <div className="col-md-6">
+                            <h3>Lista de eventos</h3>
+                            {projectList.map(p => <div className="row pt-2">
+                                <div className="col-md-9">{p.name}</div>
+                                <div className="col-md-3">
+                                    <button
+                                        onClick={() => downloadParticipationList(p.id, tokenIdSec)}
+                                        className="btn btn-secondary">descargar</button>
+                                </div>
+                            </div>)}
+                        </div>}
                         <div className="col-md-3">
 
                         </div>
