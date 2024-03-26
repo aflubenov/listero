@@ -161,7 +161,7 @@ export const useStorage = (baseName: string) => {
         setStatus("working");
 
         try {
-            const bodyResponse = await saveListToServer(formData, rowData, getStoredUUID(), '9e59d2cf-9649-464c-950d-7f6c7b759c04'); //TODO: Angel - des-hardcodear
+            const bodyResponse = await saveListToServer(formData, rowData, getStoredUUID(), '33333333-3168-4bfe-8e59-f6c3419ce73c'); //TODO: Angel - des-hardcodear
             const uuid = bodyResponse?.ret?.id;
             storeData(uuid);
 
