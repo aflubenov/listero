@@ -47,13 +47,21 @@ const defaultCols: TDataDefinition[] = [
         sizeLabel: 0
     },
     {
-        name: "Grado",
+        name: "Modalidad",
         required: true,
         type: "options",
-        options: ["Blanco", "Blanco / Amarillo", "Amarillo", "Amarillo / Naranja", "Naranja", "Naranja / Verde", "Verde", "Verde / Azul", "Azul", "Azul / Marrón", "Marrón", "Negro"],
+        options: ["Escuelita", "Torneo"],
         sizeControl: 2,
         sizeLabel: 0
     },
+    // {
+    //     name: "Grado",
+    //     required: true,
+    //     type: "options",
+    //     options: ["Blanco", "Blanco / Amarillo", "Amarillo", "Amarillo / Naranja", "Naranja", "Naranja / Verde", "Verde", "Verde / Azul", "Azul", "Azul / Marrón", "Marrón", "Negro"],
+    //     sizeControl: 2,
+    //     sizeLabel: 0
+    // },
     {
         name: "DNI",
         required: true,
